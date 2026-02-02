@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurants | AppFoods</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+        }
+
+        .navbar {
+            background: #e23744;
+        }
+
+        .navbar-brand {
+            color: #fff !important;
+            font-weight: 600;
+        }
+
+        .restaurant-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+
+        .restaurant-img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .rating {
+            background: #198754;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .cuisine {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        footer {
+            background: #212529;
+            color: #aaa;
+            padding: 15px 0;
+            margin-top: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#">🍽 AppFoods</a>
+    </div>
+</nav>
+
+<!-- PAGE TITLE -->
+<div class="container my-4">
+    <h2 class="fw-bold">Popular Restaurants</h2>
+    <p class="text-muted">Discover the best food & dining experiences</p>
+</div>
+
+<!-- RESTAURANT LIST -->
+<div class="container">
+    <div class="row g-4">
+
+        <!-- LOOP START -->
+        <div class="col-lg-3 col-md-4 col-sm-6"
+             th:each="r : ${restaurants}">
+
+            <div class="card restaurant-card h-100">
+                <img th:src="${r.imageUrl}"
+                     class="card-img-top restaurant-img"
+                     alt="Restaurant Image">
+
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold"
+                        th:text="${r.name}">Restaurant Name</h5>
+
+                    <p class="mb-1 text-muted"
+                       th:text="${r.location}">City</p>
+
+                    <p class="cuisine"
+                       th:text="${r.cuisine}">Cuisine</p>
+
+                    <span class="rating">
+                        ⭐ <span th:text="${r.rating}">4.5</span>
+                    </span>
+                </div>
+            </div>
+
+        </div>
+        <!-- LOOP END -->
+
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    © 2026 AppFoods | Designed by Shubham Shisode
+</footer>
+
+</body>
+</html>
