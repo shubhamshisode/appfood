@@ -1,34 +1,25 @@
 # -----------------------------
-# Stage 1: Build the project
+# Use Eclipse Temurin JDK 21 as base
 # -----------------------------
-FROM maven:3.9.2-eclipse-temurin-21 AS build
+FROM eclipse-temurin:21-jdk
 
-# Set working directory
+# Set working directory inside container
 WORKDIR /app
 
-# Copy pom.xml and download dependencies first (cached)
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Copy Maven wrapper and project files
+COPY mvnw .  
+COPY .mvn .mvn  
+COPY pom.xml .  
+COPY src src
 
-# Copy source code
-COPY src ./src
+# Make Maven wrapper executable
+RUN chmod +x mvnw
 
-# Package the application (skip tests for faster build)
-RUN mvn clean package -DskipTests
+# Build the project inside container (skip tests for faster build)
+RUN ./mvnw clean package -DskipTests
 
-# -----------------------------
-# Stage 2: Run the application
-# -----------------------------
-FROM eclipse-temurin:21-jdk-alpine
-
-# Set working directory
-WORKDIR /app
-
-# Copy the jar file from build stage
-COPY --from=build /app/target/*.jar appfood.jar
-
-# Expose default Spring Boot port
+# Expose Spring Boot default port (or change if needed)
 EXPOSE 8080
 
-# Command to run the Spring Boot app
-ENTRYPOINT ["java", "-jar", "appfood.jar"]
+# Run Spring Boot JAR
+CMD ["java", "-jar", "target/appfood-0.0.1-SNAPSHOT.jar"]
