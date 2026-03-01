@@ -1,29 +1,34 @@
-# Use an official Maven image to build the project
-FROM maven:3.9.2-eclipse-temurin-17 AS build
+# -----------------------------
+# Stage 1: Build the project
+# -----------------------------
+FROM maven:3.9.2-eclipse-temurin-21 AS build
 
 # Set working directory
 WORKDIR /app
 
-# Copy the pom.xml and download dependencies first (cached)
+# Copy pom.xml and download dependencies first (cached)
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Copy all source code
+# Copy source code
 COPY src ./src
 
-# Build the Spring Boot app (package into jar)
+# Package the application (skip tests for faster build)
 RUN mvn clean package -DskipTests
 
-# Use a lightweight JDK image for running the app
-FROM eclipse-temurin:17-jdk-alpine
+# -----------------------------
+# Stage 2: Run the application
+# -----------------------------
+FROM eclipse-temurin:21-jdk-alpine
 
+# Set working directory
 WORKDIR /app
 
-# Copy the jar from the build stage
+# Copy the jar file from build stage
 COPY --from=build /app/target/*.jar appfood.jar
 
-# Expose the port your Spring Boot app runs on
+# Expose default Spring Boot port
 EXPOSE 8080
 
-# Command to run the jar
-ENTRYPOINT ["java","-jar","appfood.jar"]
+# Command to run the Spring Boot app
+ENTRYPOINT ["java", "-jar", "appfood.jar"]
